@@ -1,6 +1,5 @@
-// Educational demonstration only — do not use on live platforms without explicit permission.
 {
-
+  "compilerOptions": {
     "target": "ES2022",
     "module": "CommonJS",
     "moduleResolution": "Node",

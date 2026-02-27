@@ -1,7 +1,7 @@
 // Educational demonstration only — do not use on live platforms without explicit permission.
 
-import { Browser, BrowserContext, BrowserType, chromium } from 'playwright';
 import { ProxyConfig } from '@tikwright/shared';
+import { Browser, BrowserContext, BrowserType, chromium } from 'playwright';
 import { applyFingerprintNoise, createContextDefaults } from './fingerprint';
 
 export type StealthBrowserOptions = {

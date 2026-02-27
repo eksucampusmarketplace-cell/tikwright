@@ -35,6 +35,11 @@ export const createContextDefaults = (
   };
 };
 
+/**
+ * Applies basic fingerprint noise to a page using init scripts.
+ * This includes canvas and WebGL fingerprinting obfuscation.
+ * @param page - The Playwright Page object to apply noise to
+ */
 export const applyFingerprintNoise = async (page: Page) => {
   await page.addInitScript(() => {
     const originalToDataURL = HTMLCanvasElement.prototype.toDataURL;
@@ -58,5 +63,118 @@ export const applyFingerprintNoise = async (page: Page) => {
       }
       return originalGetParameter.call(this, parameter);
     };
+  });
+};
+
+/**
+ * Applies advanced fingerprint noise to a page including:
+ * - navigator.hardwareConcurrency spoofing (random 4-16)
+ * - navigator.deviceMemory spoofing (random 4/8/16)
+ * - AudioContext offset noise
+ * - Fonts list randomization
+ * - Reduced motion / color scheme preferences
+ * @param page - The Playwright Page object to apply advanced noise to
+ */
+export const applyAdvancedNoise = async (page: Page) => {
+  await applyFingerprintNoise(page);
+
+  await page.addInitScript(() => {
+    // Spoof navigator.hardwareConcurrency (random 4-16)
+    const hardwareConcurrency = 4 + Math.floor(Math.random() * 13);
+    Object.defineProperty(navigator, 'hardwareConcurrency', {
+      get: () => hardwareConcurrency,
+      configurable: true
+    });
+
+    // Spoof navigator.deviceMemory (random 4/8/16)
+    const deviceMemoryOptions = [4, 8, 16];
+    const deviceMemory =
+      deviceMemoryOptions[Math.floor(Math.random() * deviceMemoryOptions.length)];
+    Object.defineProperty(navigator, 'deviceMemory', {
+      get: () => deviceMemory,
+      configurable: true
+    });
+
+    // Add slight offset noise to AudioContext
+    const originalGetChannelData = AudioBuffer.prototype.getChannelData;
+    AudioBuffer.prototype.getChannelData = function (channel: number) {
+      const data = originalGetChannelData.call(this, channel);
+      // Add small random noise to audio data
+      const noiseFactor = 0.0001;
+      for (let i = 0; i < data.length; i += 100) {
+        data[i] += (Math.random() - 0.5) * noiseFactor;
+      }
+      return data;
+    };
+
+    // Override document.fonts to return randomized subset
+    const originalFonts = document.fonts as FontFaceSet & { size?: number };
+    if (originalFonts && typeof originalFonts.size === 'number') {
+      const fontList: string[] = [];
+      const fontsArray = Array.from(originalFonts);
+      for (let i = 0; i < fontsArray.length; i++) {
+        fontList.push(fontsArray[i].family);
+      }
+      // Add some common fonts to the list
+      const commonFonts = ['Arial', 'Verdana', 'Times New Roman', 'Courier New', 'Georgia'];
+      commonFonts.forEach((font) => {
+        if (!fontList.includes(font)) {
+          fontList.push(font);
+        }
+      });
+      // Randomize by removing some fonts
+      const subsetSize = Math.floor(fontList.length * (0.7 + Math.random() * 0.3));
+      const randomizedFonts = fontList.slice(0, subsetSize);
+
+      Object.defineProperty(document, 'fonts', {
+        get: () => ({
+          ...originalFonts,
+          size: randomizedFonts.length,
+          check: (font: string) => randomizedFonts.includes(font)
+        }),
+        configurable: true
+      });
+    }
+
+    // Set reduced motion preference randomly
+    const reducedMotionOptions = ['no-preference', 'reduce'];
+    const reducedMotion =
+      reducedMotionOptions[Math.floor(Math.random() * reducedMotionOptions.length)];
+    Object.defineProperty(window, 'matchMedia', {
+      value: (query: string) => {
+        if (query === '(prefers-reduced-motion: reduce)') {
+          return {
+            matches: reducedMotion === 'reduce',
+            media: query,
+            onchange: null,
+            addListener: () => {},
+            removeListener: () => {},
+            addEventListener: () => {},
+            removeEventListener: () => {},
+            dispatchEvent: () => true
+          };
+        }
+        if (query === '(prefers-color-scheme: dark)') {
+          const colorSchemeOptions = ['dark', 'light', 'no-preference'];
+          const colorScheme =
+            colorSchemeOptions[Math.floor(Math.random() * colorSchemeOptions.length)];
+          return {
+            matches: colorScheme === 'dark',
+            media: query,
+            onchange: null,
+            addListener: () => {},
+            removeListener: () => {},
+            addEventListener: () => {},
+            removeEventListener: () => {},
+            dispatchEvent: () => true
+          };
+        }
+        return originalMatchMedia.call(window, query);
+      },
+      configurable: true
+    });
+
+    // Backup original matchMedia if available
+    const originalMatchMedia = window.matchMedia;
   });
 };
