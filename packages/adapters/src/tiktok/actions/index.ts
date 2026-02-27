@@ -1,4 +1,3 @@
 // Educational demonstration only — do not use on live platforms without explicit permission.
 
-export * from './selectors';
-export * from './actions';
+export * from './uploadVideoDemo';
