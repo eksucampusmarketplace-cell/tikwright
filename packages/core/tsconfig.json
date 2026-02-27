@@ -1,9 +1,12 @@
 // Educational demonstration only — do not use on live platforms without explicit permission.
 {
-
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [
+    { "path": "../shared" }
+  ]
 }

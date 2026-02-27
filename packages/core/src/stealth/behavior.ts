@@ -7,7 +7,11 @@ export const sleep = (minMs: number, maxMs: number) => {
   return new Promise((resolve) => setTimeout(resolve, delay));
 };
 
-export const moveMouseHumanLike = async (page: Page, start: { x: number; y: number }, end: { x: number; y: number }) => {
+export const moveMouseHumanLike = async (
+  page: Page,
+  start: { x: number; y: number },
+  end: { x: number; y: number }
+) => {
   const steps = 15 + Math.floor(Math.random() * 10);
   for (let step = 0; step <= steps; step += 1) {
     const t = step / steps;

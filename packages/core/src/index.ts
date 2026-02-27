@@ -3,3 +3,4 @@
 export * from './stealth/StealthBrowserFactory';
 export * from './stealth/behavior';
 export * from './stealth/fingerprint';
+export * from './stealth/session-manager';
