@@ -95,9 +95,9 @@ export class SessionManager {
 
       // Save sessionStorage if available
       try {
-        const pages = context.pages();
-        if (pages.length > 0) {
-          const sessionStorageData = await pages[0].evaluate(() => {
+        const sessionPages = context.pages();
+        if (sessionPages.length > 0) {
+          const sessionStorageData = await sessionPages[0].evaluate(() => {
             const data: Record<string, string> = {};
             for (let i = 0; i < sessionStorage.length; i++) {
               const key = sessionStorage.key(i);

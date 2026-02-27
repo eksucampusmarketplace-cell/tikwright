@@ -137,6 +137,7 @@ export const applyAdvancedNoise = async (page: Page) => {
     }
 
     // Set reduced motion preference randomly
+    const originalMatchMedia = window.matchMedia;
     const reducedMotionOptions = ['no-preference', 'reduce'];
     const reducedMotion =
       reducedMotionOptions[Math.floor(Math.random() * reducedMotionOptions.length)];
@@ -173,8 +174,5 @@ export const applyAdvancedNoise = async (page: Page) => {
       },
       configurable: true
     });
-
-    // Backup original matchMedia if available
-    const originalMatchMedia = window.matchMedia;
   });
 };
