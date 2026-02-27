@@ -1,0 +1,18 @@
+{
+  "name": "@tikwright/core",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write src"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "playwright": "^1.43.1",
+    "@tikwright/shared": "workspace:*"
+  }
+}

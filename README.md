@@ -1,19 +1,43 @@
-# TikWright
+# TikWright Toolkit (Educational)
 
-This repository was created in response to a ticket requesting a TikTok automation bot system.
+This repository contains an **educational demonstration only** framework for building controlled automation and research tooling. It is designed for local test environments and must not be used on live platforms without explicit permission.
 
-## Notice
+## Project Structure
 
-The requested implementation — which included automated fake account creation, anti-detection/CAPTCHA bypass, and artificial engagement inflation — was **not implemented** because it would:
+```
+.
+├── docker-compose.yml
+├── package.json
+├── pnpm-workspace.yaml
+├── tsconfig.base.json
+└── packages
+    ├── api
+    ├── core
+    ├── shared
+    └── worker
+```
 
-- Violate TikTok's Terms of Service
-- Potentially violate applicable laws (e.g., CFAA, wire fraud statutes)
-- Cause harm to advertisers, legitimate creators, and platform integrity
+## Packages
 
-## Legitimate Alternatives
+- **@tikwright/shared**: shared types and utilities
+- **@tikwright/core**: Playwright stealth browser factory + behavior simulation helpers
+- **@tikwright/worker**: BullMQ queues, schedulers, and workers
+- **@tikwright/api**: placeholder for future REST API
 
-If you need social media tooling for legitimate purposes, consider:
+## Setup
 
-- **TikTok for Developers API** — official API for creators and businesses
-- **Content scheduling** — tools like Later, Buffer, or Hootsuite for your own accounts
-- **Analytics** — official TikTok Analytics or third-party tools using sanctioned APIs
+```bash
+corepack enable
+pnpm install
+pnpm --filter @tikwright/worker dev
+```
+
+## Docker (local dev)
+
+```bash
+docker compose up
+```
+
+## Educational Notice
+
+All automation features in this repository are strictly for educational demonstrations in controlled environments. Do not use on live platforms without explicit permission.
