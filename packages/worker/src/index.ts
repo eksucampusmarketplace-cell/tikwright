@@ -1,14 +1,17 @@
 // Educational demonstration only — do not use on live platforms without explicit permission.
 
-import { QueueJobPayload } from '@tikwright/shared';
+import { QueueJobPayload, ensureSafeAutomationTarget, loadEnv } from '@tikwright/shared';
 import { createQueue, QUEUE_NAMES } from './queues';
 
 const run = async () => {
+  const env = loadEnv();
+  const baseUrl = ensureSafeAutomationTarget(env);
   const queue = createQueue(QUEUE_NAMES.sessionTasks);
   const payload: QueueJobPayload = {
     sessionId: 'demo-session',
     task: 'stealth-check',
-    targetUrl: 'https://example.com'
+    targetUrl: new URL('/health', baseUrl).toString(),
+    environment: env.targetEnv
   };
 
   await queue.add('session-task', payload);

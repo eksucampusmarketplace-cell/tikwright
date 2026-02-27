@@ -1,19 +1,27 @@
 // Educational demonstration only — do not use on live platforms without explicit permission.
 
 import { Worker } from 'bullmq';
-import { QueueJobPayload } from '@tikwright/shared';
+import {
+  QueueJobPayload,
+  ensureJobMatchesTarget,
+  ensureSafeAutomationTarget,
+  loadEnv
+} from '@tikwright/shared';
 import { createQueueConfig, createRedisConnection, QUEUE_NAMES } from './queues';
 
 const run = () => {
+  const env = loadEnv();
+  ensureSafeAutomationTarget(env);
   const config = createQueueConfig();
   const connection = createRedisConnection(config.redisUrl);
 
   const worker = new Worker<QueueJobPayload>(
     QUEUE_NAMES.sessionTasks,
     async (job) => {
-      const { task, targetUrl } = job.data;
+      ensureJobMatchesTarget(job.data, env);
+      const { task, targetUrl, environment } = job.data;
       await new Promise((resolve) => setTimeout(resolve, 500));
-      return { task, targetUrl, processedAt: new Date().toISOString() };
+      return { task, targetUrl, environment, processedAt: new Date().toISOString() };
     },
     {
       connection,
