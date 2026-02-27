@@ -12,5 +12,9 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.0"
+  },
+  "dependencies": {
+    "@tikwright/core": "workspace:*",
+    "playwright": "^1.43.1"
   }
 }
